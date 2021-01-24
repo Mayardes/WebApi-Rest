@@ -27,3 +27,8 @@ C:\Projetos\Pessoais\MeuApp\myapi\obj\Debug\net5.0\myapi.dll
 C:\Projetos\Pessoais\MeuApp\myapi\obj\Debug\net5.0\ref\myapi.dll
 C:\Projetos\Pessoais\MeuApp\myapi\obj\Debug\net5.0\myapi.pdb
 C:\Projetos\Pessoais\MeuApp\myapi\obj\Debug\net5.0\myapi.genruntimeconfig.cache
+C:\Projetos\Pessoais\MeuApp\myapi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
+C:\Projetos\Pessoais\MeuApp\myapi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Projetos\Pessoais\MeuApp\myapi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Projetos\Pessoais\MeuApp\myapi\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Projetos\Pessoais\MeuApp\myapi\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
