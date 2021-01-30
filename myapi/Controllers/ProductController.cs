@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myapi.Data;
 using myapi.Models;
@@ -9,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace myapi.Controllers
 {
-    [Route("product")]
+    [Route("v1/product")]
     public class ProductController : ControllerBase
     {
         [HttpGet]
         [Route("")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
         {
             var product = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
@@ -22,6 +24,7 @@ namespace myapi.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Product>>Get(int id, [FromServices] DataContext context)
         {
             var product = await context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -35,6 +38,7 @@ namespace myapi.Controllers
 
         [HttpGet]
         [Route("category/{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Product>> GetByCategory(int id, [FromServices] DataContext context)
         {
             var product = await context.Products.Include(x => x.Category).Where(x => x.CategoryId == id).AsNoTracking().ToListAsync();
@@ -46,6 +50,7 @@ namespace myapi.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize(Roles ="Manager")]
         public async Task<ActionResult<Product>> Post([FromBody] Product model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
@@ -66,6 +71,7 @@ namespace myapi.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles ="Manager")]
         public async Task<ActionResult<Product>>Put(int id, [FromBody]Product model, [FromServices]DataContext context)
         {
             if(id != model.Id)
@@ -91,6 +97,7 @@ namespace myapi.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles ="Manager")]
         public async Task<ActionResult<Product>> Delete (int id, [FromServices]DataContext context){
             var product = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if(product == null)

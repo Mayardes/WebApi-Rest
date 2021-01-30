@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myapi.Data;
 using myapi.Models;
@@ -10,11 +11,13 @@ using System.Threading.Tasks;
 
 namespace myapi.Controllers
 {
-    [Route("category")]
+    [Route("v1/category")]
     public class CategoryController : ControllerBase
     {
         [HttpGet]
         [Route("")]
+        [AllowAnonymous]
+        [ResponseCache(VaryByHeader = "User-Agent", Location = ResponseCacheLocation.Any, Duration = 30)]
         public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
             var category = await context.Categories.AsNoTracking().ToListAsync();
@@ -23,6 +26,7 @@ namespace myapi.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Category>> Get(int id, [FromServices] DataContext context)
         {
             var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -34,6 +38,7 @@ namespace myapi.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<List<Category>>> Post(
             [FromBody] Category model, 
             [FromServices]DataContext context)
@@ -59,6 +64,7 @@ namespace myapi.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<List<Category>>> Put([FromBody] Category model, int id, [FromServices]DataContext context)
         {
             if(model.Id != id)
@@ -87,6 +93,7 @@ namespace myapi.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<Category>> Delete(int id, [FromServices] DataContext context)
         {
             var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,15 @@ namespace myapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
 
+            services.AddResponseCompression(Opt =>
+            {
+                Opt.Providers.Add<GzipCompressionProvider>();
+                Opt.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json"});
+            });
+
+            //services.AddResponseCaching();
             services.AddControllers();
 
 
@@ -61,7 +70,7 @@ namespace myapi
 
 
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("connectionString")));
-            services.AddScoped<DataContext, DataContext>();
+            //services.AddScoped<DataContext, DataContext>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "myapi", Version = "v1" });
@@ -81,6 +90,12 @@ namespace myapi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(x => {
+                x.AllowAnyOrigin();
+                x.AllowAnyMethod();
+                x.AllowAnyHeader();
+            });
+
             app.UseAuthentication();
             app.UseAuthorization();
             

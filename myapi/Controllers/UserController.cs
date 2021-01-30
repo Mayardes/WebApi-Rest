@@ -24,6 +24,7 @@ namespace myapi.Controllers
                 return BadRequest(ModelState);
             try
             {
+                model.Role = "Admin";
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
                 return Ok(model);
@@ -35,6 +36,37 @@ namespace myapi.Controllers
             {
                 return BadRequest(new { message = E.Message});
             }
+        }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        [Authorize(Roles ="Manager")]
+        public async Task<ActionResult<User>> Put (int id, [FromServices] DataContext context, [FromBody]User model)
+        {
+            if(id != model.Id)
+                return BadRequest(new { message="Elementos são diferentes"});
+            else
+                try
+                {
+                    context.Entry<User>(model).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                    return Ok(model);
+
+                }catch( DBConcurrencyException E)
+                {
+                    return BadRequest(new { message = E.Message});
+                }catch(Exception E)
+                {
+                    return BadRequest(new { E.Message});
+                }
+        }
+
+        [HttpGet]
+        [Route("")]
+        [Authorize(Roles ="Manager")]
+        public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
+        {
+            return await context.Users.AsNoTracking().ToListAsync();
         }
 
         [HttpPost]
